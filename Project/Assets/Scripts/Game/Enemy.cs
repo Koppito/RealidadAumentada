@@ -2,36 +2,35 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Enemy : MonoBehaviour {
+public class Enemy : EnemyGroup {
 
-	public float amplitud;
-	public float frecuency;
-	public Spaceship spaceship;
+	public int velocity;
+	public IStrategy movementStrategy;
 
-	Rigidbody rb;
-	float posx;
+	private int health = 6;
+	private Rigidbody rb;
 
-	void Start () {
-		this.gameObject.tag = "Enemy";
-		rb = GetComponent<Rigidbody> ();
-
-		//Instantiating spaceship
-		spaceship = Instantiate(spaceship, this.transform.position, this.transform.rotation) as Spaceship;
-		spaceship.transform.parent = this.transform;
-	}
-
-	void Update () {
-		posx = Mathf.Sin(transform.position.z * frecuency) * amplitud;
-		Vector3 movement = new Vector3 (posx, 0f, -1);
-		movement *= spaceship.getSpeed() * Time.deltaTime;
-		rb.position +=  movement;
-		rb.rotation = Quaternion.Euler(0.0f, 0.0f, rb.velocity.x * -spaceship.getTilt());
-	}
-
-	void OnTriggerEnter(Collider col) {
-		if (col.transform.tag == "Projectile") {
-			Destroy (this.gameObject);
+	public int Health {
+		get {
+			return health;
+		}
+		set {
+			if ((value >= 0) && (value <= 6)) {
+				health = value;
+			}
 		}
 	}
 
+	void Start() {
+		rb = GetComponent<Rigidbody> ();
+	}
+
+	void Update() {
+		movementStrategy.MoveStrategy (this.transform.position, this.rb, this.velocity);
+
+		//Destroys object once it reaches zMin
+		if (this.transform.position.z < zMin) {
+			Destroy (this.gameObject);
+		}
+	}
 }

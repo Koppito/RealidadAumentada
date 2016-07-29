@@ -1,50 +1,61 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//Boundaries... Limits the players max movement
-[System.Serializable]
-public class Boundary {
-	public float xMin, xMax, zMin, zMax;
-}
-
 [RequireComponent(typeof(Rigidbody))]
-public class Player : MonoBehaviour {
+public class Player : MainController {
 
-	public Spaceship spaceship;
-	public Boundary boundary;
+	public float velocity;
+	public Transform muzzleLeft;
+	public Transform muzzleRight;
+	public Gun gun;
+	public VirtualJoystick joystick;
 
-	float moveHorizontal;
-	float moveVertical;
-	Rigidbody rb;
-	VirtualJoystick joystick;
+	private int health = 6;
+	private float tilt = 1;
+	private bool allowPlayerMovement;
+	private Vector3 playerStartPos;
+	private Rigidbody rb;
 
-	void Start () {
-		//Initializing variables
-		rb = GetComponent<Rigidbody> ();
-
-		//Find joystick
-		joystick = GameObject.Find("Joystick").GetComponentInChildren<VirtualJoystick>();
-
-		//Instantiating spaceship
-		spaceship = Instantiate(spaceship, this.transform.position, this.transform.rotation) as Spaceship;
-		spaceship.transform.parent = this.transform;
-	}
-
-	void FixedUpdate() {
-		//Detecting platform for movement
-		moveHorizontal = joystick.Vertical();
-		moveVertical = joystick.Horizontal();
-		Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
-		//Adding movement
-		rb.velocity = movement * spaceship.getSpeed();
-		rb.position = new Vector3 (Mathf.Clamp(rb.position.x, boundary.xMin, boundary.xMax), transform.position.y, Mathf.Clamp(rb.position.z, boundary.zMin, boundary.zMax));
-		rb.rotation = Quaternion.Euler(0.0f, 0.0f, rb.velocity.x * -spaceship.getTilt());
-	}
-
-	void OnTriggerEnter(Collider col) {
-		if (col.transform.parent.tag == "Enemy") {
-			Destroy (this.gameObject);
+	public int Health {
+		get {
+			return health;
+		}
+		set {
+			if ((value >= 0) && (value <= 6)) {
+				health = value;
+			}
 		}
 	}
+
+	void Start() {
+		rb = GetComponent<Rigidbody> ();
+		joystick = GameObject.Find ("Joystick").GetComponentInChildren<VirtualJoystick> ();
+		playerStartPos = new Vector3(0, 5, -8);
+	}
+
+	void Update() {
+		//Initial Movement
+		if (!RoughlyEqual (transform.position.z, playerStartPos.z, 0.5f))
+			transform.position = Vector3.Lerp (transform.position, playerStartPos, 0.05f);
+		else 
+			allowPlayerMovement = true;
+
+		//Player Movement
+		if (allowPlayerMovement) {
+			float moveHorizontal = joystick.Horizontal ();
+
+			rb.velocity = new Vector3 (moveHorizontal, 0, 0) * velocity;
+			rb.rotation = Quaternion.Euler (0.0f, 0.0f, rb.velocity.x * -tilt);
+			rb.position = new Vector3 (Mathf.Clamp (rb.position.x, xMin, xMax), transform.position.y, transform.position.z);
+		}
+
+		//Detect Button Press
+		if (mouseDown) {
+			timeMouseDown += Time.deltaTime;
+			gun.Shoot ();
+		}
+	}
+
+
+
 }

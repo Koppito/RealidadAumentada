@@ -2,11 +2,11 @@
 using System.Collections;
 
 public class MainMenu : MonoBehaviour {
-
+	/*
 	public Button configGear;
 	public Button playCube;
 	public GameObject gameTitle;
-	public Gamecontroller gameController;
+	public MainController gameController;
 
 	Ray ray;
 
@@ -46,4 +46,5 @@ public class MainMenu : MonoBehaviour {
 	void StartConfigMenu() {
 		
 	}
+	*/
 }

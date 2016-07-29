@@ -22,3 +22,5 @@ C:\Users\Koppito\Documents\RA Project\Temp\bin\Debug\Vuforia.UnityExtensions.xml
 C:\Users\Koppito\Documents\RA Project\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
 C:\Users\Koppito\Documents\RA Project\obj\Debug\Assembly-CSharp.dll
 C:\Users\Koppito\Documents\RA Project\obj\Debug\Assembly-CSharp.pdb
+C:\Users\Kopp\Documents\GitHub\RealidadAumentada\Project\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
+C:\Users\Kopp\Documents\GitHub\RealidadAumentada\Project\obj\Debug\Assembly-CSharp.dll
